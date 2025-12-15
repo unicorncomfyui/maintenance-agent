@@ -1,21 +1,12 @@
-name: Daily Maintenance Scan
+name: Maintenance Scan
 
 on:
-  # Run daily at 9 AM UTC
-  schedule:
-    - cron: '0 9 * * *'
-
-  # Allow manual trigger
+  # Manual trigger only (for testing)
   workflow_dispatch:
 
-  # Run on push to main (for testing)
-  push:
-    branches:
-      - main
-    paths:
-      - 'agent/**'
-      - 'config.yaml'
-      - '.github/workflows/daily-scan.yml'
+  # Uncomment below to enable daily automatic scans
+  # schedule:
+  #   - cron: '0 9 * * *'
 
 jobs:
   scan:
