@@ -31,8 +31,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          cd agent
-          python main.py
+          python agent/main.py
 
       - name: Commit state updates
         run: |

@@ -146,7 +146,7 @@ class GitHubScanner:
 class StateManager:
     """Manage the state of what we've already seen"""
 
-    def __init__(self, state_file: str = ".agent_state.json"):
+    def __init__(self, state_file: str = "agent/.agent_state.json"):
         self.state_file = state_file
         self.state = self._load_state()
 

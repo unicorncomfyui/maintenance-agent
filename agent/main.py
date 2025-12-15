@@ -31,12 +31,7 @@ class MaintenanceAgent:
     def _load_config(self, config_path: str) -> Dict:
         """Load configuration from YAML file"""
         try:
-            # If config not found in current dir, try parent directory
-            config_file = Path(config_path)
-            if not config_file.exists():
-                config_file = Path("..") / config_path
-
-            with open(config_file, "r") as f:
+            with open(config_path, "r") as f:
                 return yaml.safe_load(f)
         except Exception as e:
             logger.error(f"Error loading config: {e}")
