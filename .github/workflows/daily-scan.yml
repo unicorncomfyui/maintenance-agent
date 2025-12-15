@@ -1,0 +1,52 @@
+name: Daily Maintenance Scan
+
+on:
+  # Run daily at 9 AM UTC
+  schedule:
+    - cron: '0 9 * * *'
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+  # Run on push to main (for testing)
+  push:
+    branches:
+      - main
+    paths:
+      - 'agent/**'
+      - 'config.yaml'
+      - '.github/workflows/daily-scan.yml'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run maintenance agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          cd agent
+          python main.py
+
+      - name: Commit state updates
+        run: |
+          git config --local user.email "maintenance-agent@github.com"
+          git config --local user.name "Maintenance Agent"
+          git add agent/.agent_state.json || true
+          git diff --staged --quiet || git commit -m "chore: update agent state [skip ci]"
+          git push || true

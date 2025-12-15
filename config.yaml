@@ -1,0 +1,70 @@
+# Maintenance Agent Configuration
+# Defines sources to monitor and target repositories to maintain
+
+# Projects to maintain
+target_repos:
+  - owner: unicorncomfyui
+    repo: serverless_runpod
+    description: "RunPod Serverless ComfyUI"
+
+  - owner: unicorncomfyui
+    repo: pod-comfyui-vscode
+    description: "RunPod Pod with ComfyUI + VSCode"
+
+# Sources to monitor
+sources:
+  # Critical dependencies
+  github_repos:
+    - owner: comfyanonymous
+      repo: ComfyUI
+      description: "ComfyUI main repository"
+      priority: high
+      watch_for: [releases, tags]
+
+    - owner: thu-ml
+      repo: SageAttention
+      description: "SageAttention optimized attention"
+      priority: high
+      watch_for: [releases, tags, commits]
+
+    - owner: pytorch
+      repo: pytorch
+      description: "PyTorch framework"
+      priority: critical
+      watch_for: [releases]
+
+    # Popular custom nodes
+    - owner: ltdrdata
+      repo: ComfyUI-Manager
+      description: "ComfyUI Manager"
+      priority: medium
+      watch_for: [releases]
+
+    - owner: kijai
+      repo: ComfyUI-KJNodes
+      description: "KJ Nodes collection"
+      priority: medium
+      watch_for: [releases]
+
+# Monitoring settings
+monitoring:
+  # How often to check (for scheduled runs)
+  check_interval: daily
+
+  # Analysis thresholds
+  thresholds:
+    min_priority_score: 5  # 0-10 scale
+    auto_create_issue: true
+    auto_create_pr: false  # Phase 2
+
+  # Notification channels
+  notifications:
+    github_issues: true
+    discord_webhook: false  # Optional
+    email: false  # Optional
+
+# Claude API settings
+claude:
+  model: "claude-sonnet-4-5-20250929"
+  max_tokens: 1000
+  temperature: 0.3  # Lower for more consistent analysis
