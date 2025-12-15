@@ -46,6 +46,16 @@ sources:
       priority: medium
       watch_for: [releases]
 
+  # Reddit sources
+  reddit_subreddits:
+    - subreddit: StableDiffusion
+      description: "Stable Diffusion community updates"
+      priority: medium
+      filters:
+        flairs: ["Release", "News", "Tools"]
+        keywords: ["ComfyUI", "update", "release", "new version", "v0.", "v1.", "v2."]
+      max_posts: 20
+
 # Monitoring settings
 monitoring:
   # How often to check (for scheduled runs)

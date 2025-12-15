@@ -8,7 +8,7 @@ import logging
 from pathlib import Path
 from typing import Dict, List
 
-from scanners import GitHubScanner, StateManager
+from scanners import GitHubScanner, StateManager, RedditScanner
 from analyzer import UpdateAnalyzer
 from notifier import GitHubNotifier
 from pr_creator import PRCreator
@@ -25,6 +25,7 @@ class MaintenanceAgent:
     def __init__(self, config_path: str = "config.yaml"):
         self.config = self._load_config(config_path)
         self.scanner = GitHubScanner()
+        self.reddit_scanner = RedditScanner()
         self.state_manager = StateManager()
         self.analyzer = UpdateAnalyzer()
         self.notifier = GitHubNotifier()
@@ -94,6 +95,49 @@ class MaintenanceAgent:
                             "changelog": "",
                         }
                     )
+
+        return updates
+
+    def scan_reddit(self, reddit_config: Dict) -> List[Dict]:
+        """
+        Scan Reddit subreddit for technical updates
+
+        Returns list of relevant posts
+        """
+        subreddit = reddit_config.get("subreddit")
+        max_posts = reddit_config.get("max_posts", 20)
+        filters = reddit_config.get("filters", {})
+        flairs = filters.get("flairs", [])
+        keywords = filters.get("keywords", [])
+
+        logger.info(f"Scanning r/{subreddit}...")
+
+        # Get recent posts
+        posts = self.reddit_scanner.get_recent_posts(subreddit, max_posts)
+
+        # Filter to technical posts
+        technical_posts = self.reddit_scanner.filter_technical_posts(
+            posts, flairs=flairs, keywords=keywords
+        )
+
+        updates = []
+        for post in technical_posts:
+            post_key = f"reddit/{subreddit}/{post['url']}"
+
+            # Check if we've already seen this post
+            if not self.state_manager.is_new_version(post_key, post['url']):
+                continue
+
+            logger.info(f"Found new technical post: {post['title']}")
+            updates.append(
+                {
+                    "type": "reddit_post",
+                    "repo": f"r/{subreddit}",
+                    "version": post['title'][:50],  # Use title as "version"
+                    "data": post,
+                    "changelog": f"{post['title']}\n\n{post['selftext'][:500]}",
+                }
+            )
 
         return updates
 
@@ -225,7 +269,8 @@ class MaintenanceAgent:
         logger.info("🤖 Starting Maintenance Agent...")
 
         # Get configuration
-        sources = self.config.get("sources", {}).get("github_repos", [])
+        github_sources = self.config.get("sources", {}).get("github_repos", [])
+        reddit_sources = self.config.get("sources", {}).get("reddit_subreddits", [])
         target_repos = self.config.get("target_repos", [])
 
         if not target_repos:
@@ -235,8 +280,8 @@ class MaintenanceAgent:
         total_updates = 0
         total_notifications = 0
 
-        # Scan each source repository
-        for repo_config in sources:
+        # Scan GitHub repositories
+        for repo_config in github_sources:
             try:
                 updates = self.scan_repository(repo_config)
 
@@ -248,6 +293,22 @@ class MaintenanceAgent:
             except Exception as e:
                 logger.error(
                     f"Error processing {repo_config.get('owner')}/{repo_config.get('repo')}: {e}"
+                )
+                continue
+
+        # Scan Reddit subreddits
+        for reddit_config in reddit_sources:
+            try:
+                updates = self.scan_reddit(reddit_config)
+
+                for update in updates:
+                    total_updates += 1
+                    notifications = self.process_update(update, target_repos)
+                    total_notifications += notifications
+
+            except Exception as e:
+                logger.error(
+                    f"Error processing r/{reddit_config.get('subreddit')}: {e}"
                 )
                 continue
 

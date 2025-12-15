@@ -190,3 +190,113 @@ class StateManager:
         """Check if this is a new version we haven't seen"""
         last_seen = self.get_last_seen(repo_key)
         return last_seen is None or last_seen != version
+
+
+class RedditScanner:
+    """Scan Reddit subreddits for technical updates"""
+
+    def __init__(self):
+        self.base_url = "https://www.reddit.com"
+        self.headers = {
+            "User-Agent": "MaintenanceAgent/1.0"
+        }
+
+    def get_recent_posts(
+        self, subreddit: str, max_posts: int = 20, hours: int = 168
+    ) -> List[Dict]:
+        """
+        Get recent posts from a subreddit
+
+        Args:
+            subreddit: Subreddit name (without r/)
+            max_posts: Maximum number of posts to fetch
+            hours: Only fetch posts from last N hours (default: 7 days)
+
+        Returns:
+            List of post dictionaries
+        """
+        url = f"{self.base_url}/r/{subreddit}/new.json"
+        params = {"limit": max_posts}
+
+        try:
+            response = requests.get(
+                url, headers=self.headers, params=params, timeout=10
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                posts = []
+
+                cutoff_time = datetime.now().timestamp() - (hours * 3600)
+
+                for child in data.get("data", {}).get("children", []):
+                    post_data = child.get("data", {})
+                    created_utc = post_data.get("created_utc", 0)
+
+                    # Only include recent posts
+                    if created_utc >= cutoff_time:
+                        posts.append(
+                            {
+                                "title": post_data.get("title", ""),
+                                "url": f"{self.base_url}{post_data.get('permalink', '')}",
+                                "author": post_data.get("author", ""),
+                                "created": datetime.fromtimestamp(created_utc),
+                                "flair": post_data.get("link_flair_text", ""),
+                                "selftext": post_data.get("selftext", ""),
+                                "score": post_data.get("score", 0),
+                                "num_comments": post_data.get("num_comments", 0),
+                            }
+                        )
+
+                logger.info(f"Found {len(posts)} recent posts in r/{subreddit}")
+                return posts
+            else:
+                logger.error(f"Reddit API error: {response.status_code}")
+                return []
+
+        except Exception as e:
+            logger.error(f"Error fetching Reddit posts: {e}")
+            return []
+
+    def filter_technical_posts(
+        self,
+        posts: List[Dict],
+        flairs: List[str] = None,
+        keywords: List[str] = None,
+    ) -> List[Dict]:
+        """
+        Filter posts to keep only technical/release posts
+
+        Args:
+            posts: List of posts
+            flairs: List of allowed flairs (case-insensitive)
+            keywords: List of keywords to match in title/body
+
+        Returns:
+            Filtered list of posts
+        """
+        if not flairs and not keywords:
+            return posts
+
+        filtered = []
+
+        for post in posts:
+            # Check flair filter
+            if flairs:
+                post_flair = post.get("flair", "").lower()
+                if not any(flair.lower() in post_flair for flair in flairs):
+                    continue
+
+            # Check keyword filter
+            if keywords:
+                title = post.get("title", "").lower()
+                body = post.get("selftext", "").lower()
+                text = f"{title} {body}"
+
+                if not any(keyword.lower() in text for keyword in keywords):
+                    continue
+
+            filtered.append(post)
+
+        logger.info(f"Filtered to {len(filtered)} technical posts")
+        return filtered
