@@ -11,6 +11,7 @@ from typing import Dict, List
 from scanners import GitHubScanner, StateManager
 from analyzer import UpdateAnalyzer
 from notifier import GitHubNotifier
+from pr_creator import PRCreator
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -27,6 +28,10 @@ class MaintenanceAgent:
         self.state_manager = StateManager()
         self.analyzer = UpdateAnalyzer()
         self.notifier = GitHubNotifier()
+
+        # Initialize PR creator if auto_create_pr is enabled
+        self.auto_create_pr = self.config.get("monitoring", {}).get("thresholds", {}).get("auto_create_pr", False)
+        self.pr_creator = PRCreator() if self.auto_create_pr else None
 
     def _load_config(self, config_path: str) -> Dict:
         """Load configuration from YAML file"""
@@ -155,10 +160,54 @@ class MaintenanceAgent:
             if success:
                 notifications_created += 1
 
+            # Create PR if enabled and conditions are met
+            if self.pr_creator and self._should_create_pr(analysis, update):
+                logger.info(f"Creating PR in {owner}/{repo}...")
+                pr_url = self.pr_creator.create_update_pr(
+                    owner=owner,
+                    repo=repo,
+                    update_info=update,
+                    analysis=analysis,
+                )
+                if pr_url:
+                    logger.info(f"✅ Created PR: {pr_url}")
+
         # Update state
         self.state_manager.update_last_seen(repo_name, new_version)
 
         return notifications_created
+
+    def _should_create_pr(self, analysis: Dict, update: Dict) -> bool:
+        """
+        Determine if we should create a PR for this update
+
+        Returns True if:
+        - Priority is high enough
+        - Recommendation is in allowed list (UPDATE, EVALUATE)
+        - Not BLOCK recommendation
+        """
+        thresholds = self.config.get("monitoring", {}).get("thresholds", {})
+        min_priority_for_pr = thresholds.get("min_priority_for_pr", 6)
+        create_pr_for = thresholds.get("create_pr_for", ["UPDATE", "EVALUATE"])
+
+        priority = analysis.get("priority", 0)
+        recommendation = analysis.get("recommendation", "IGNORE")
+
+        # Don't create PR if priority too low
+        if priority < min_priority_for_pr:
+            logger.debug(
+                f"Priority {priority} < {min_priority_for_pr}, skipping PR"
+            )
+            return False
+
+        # Don't create PR if recommendation not in allowed list
+        if recommendation not in create_pr_for:
+            logger.debug(
+                f"Recommendation {recommendation} not in {create_pr_for}, skipping PR"
+            )
+            return False
+
+        return True
 
     def _get_context(self) -> str:
         """Get context about our deployment"""

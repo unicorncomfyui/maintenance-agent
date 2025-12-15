@@ -83,6 +83,15 @@ If priority ≥ 4 and recommendation is not IGNORE:
 - Adds labels based on priority and component
 - Includes detailed analysis and action items
 
+### 4. Pull Request Creation (Phase 2)
+
+If `auto_create_pr: true` and priority ≥ 6:
+- **Automatically creates PRs** with dependency updates
+- Modifies relevant files (Dockerfile, requirements.txt, etc.)
+- Includes full analysis in PR description
+- Only for UPDATE and EVALUATE recommendations (not BLOCK)
+- You review and merge manually
+
 ## Issue Format
 
 ```markdown
@@ -167,27 +176,27 @@ maintenance-agent/
 - `tags`: Version tags
 - `commits`: Recent commits (last 7 days)
 
-## Phase 1 MVP Features
+## Features
 
+### Phase 1 (MVP) ✅
 ✅ Monitor GitHub releases, tags, and commits
 ✅ Intelligent analysis with Claude API
 ✅ Priority scoring (0-10) and recommendations
 ✅ Breaking change detection
 ✅ Automated issue creation with labels
 ✅ State persistence to avoid duplicates
-✅ Daily scheduled scans
+✅ Manual workflow triggers
 
-## Future Phases
+### Phase 2 (Current) ✅
+✅ **Automated PR creation** with file modifications
+✅ Smart file detection (Dockerfile, requirements.txt, init.sh)
+✅ Configurable PR creation rules
+✅ Priority-based PR filtering (min priority: 6)
 
-**Phase 2**: Intelligent analysis
+### Phase 3 (Future)
 - Additional sources (Reddit, HuggingFace, PyPI)
 - Dependency graph analysis
-- Breaking change prediction
-- Test result integration
-
-**Phase 3**: Autonomous operations
-- Automated PR creation
-- CI/CD integration
+- CI/CD integration with tests
 - Auto-merge for safe updates
 - Rollback capabilities
 

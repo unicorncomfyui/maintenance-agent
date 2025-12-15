@@ -53,9 +53,16 @@ monitoring:
 
   # Analysis thresholds
   thresholds:
-    min_priority_score: 5  # 0-10 scale
+    min_priority_score: 4  # 0-10 scale (minimum to create issue)
+    min_priority_for_pr: 6  # Minimum priority to create PR automatically
     auto_create_issue: true
-    auto_create_pr: false  # Phase 2
+    auto_create_pr: true  # Phase 2 - Enable automatic PR creation
+
+    # PR creation rules
+    create_pr_for:
+      - UPDATE  # Create PR for safe updates
+      - EVALUATE  # Create PR for updates that need evaluation
+      # BLOCK recommendations will only get issues, never PRs
 
   # Notification channels
   notifications:
