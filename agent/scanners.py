@@ -198,7 +198,7 @@ class RedditScanner:
     def __init__(self):
         self.base_url = "https://www.reddit.com"
         self.headers = {
-            "User-Agent": "MaintenanceAgent/1.0"
+            "User-Agent": "linux:maintenance-agent:v1.0.0 (by /u/maintenance_bot)"
         }
 
     def get_recent_posts(
