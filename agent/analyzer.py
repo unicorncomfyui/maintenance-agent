@@ -203,7 +203,19 @@ Respond in JSON format:
         if release_date:
             header += f"\n**Released:** {release_date}"
 
-        body = header + """
+        # Format benefits, risks, and action items
+        benefits = analysis.get('benefits', ['No benefits listed'])
+        benefits_str = '\n'.join(f"- {b}" for b in benefits)
+
+        risks = analysis.get('risks', ['No risks identified'])
+        risks_str = '\n'.join(f"- {r}" for r in risks)
+
+        action_items = analysis.get('action_items', ['Review update'])
+        action_items_str = '\n'.join(f"- [ ] {a}" for a in action_items)
+
+        summary = analysis.get('summary', 'No summary available')
+
+        body = header + f"""
 
 ---
 
@@ -211,18 +223,18 @@ Respond in JSON format:
 
 **Priority:** {priority}/10
 
-{analysis.get('summary', 'No summary available')}
+{summary}
 
 ---
 
 ### Benefits
-{chr(10).join(f"- {b}" for b in analysis.get('benefits', ['No benefits listed']))}
+{benefits_str}
 
 ### Potential Risks
-{chr(10).join(f"- {r}" for r in analysis.get('risks', ['No risks identified']))}
+{risks_str}
 
 ### Action Items
-{chr(10).join(f"- [ ] {a}" for a in analysis.get('action_items', ['Review update']))}
+{action_items_str}
 
 ---
 
