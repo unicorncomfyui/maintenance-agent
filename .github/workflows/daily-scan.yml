@@ -40,9 +40,15 @@ jobs:
           python agent/main.py
 
       - name: Commit state updates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           git config --local user.email "maintenance-agent@github.com"
           git config --local user.name "Maintenance Agent"
+
+          # Configure git to use the PAT
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+
           git add agent/.agent_state.json || true
           git diff --staged --quiet || git commit -m "chore: update agent state [skip ci]"
           git push || true

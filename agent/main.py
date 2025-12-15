@@ -154,6 +154,7 @@ class MaintenanceAgent:
                 new=new_version,
                 analysis=analysis,
                 changelog=changelog,
+                update_info=update,
                 analyzer=self.analyzer,
             )
 

@@ -151,7 +151,7 @@ Respond in JSON format:
         return False
 
     def format_issue_body(
-        self, repo_name: str, current: str, new: str, analysis: Dict, changelog: str
+        self, repo_name: str, current: str, new: str, analysis: Dict, changelog: str, update_info: Dict = None
     ) -> str:
         """Format the GitHub issue body"""
 
@@ -175,10 +175,35 @@ Respond in JSON format:
             "IGNORE": "⏭️",
         }.get(rec, "❓")
 
-        body = f"""## {priority_emoji} Update Available: {repo_name}
+        # Extract source info from update_info
+        source_url = ""
+        release_date = ""
+        if update_info:
+            data = update_info.get("data", {})
+            source_url = data.get("html_url", "")
+            published_at = data.get("published_at", "") or data.get("created_at", "")
+            if published_at:
+                # Format date nicely (GitHub returns ISO format)
+                from datetime import datetime
+                try:
+                    dt = datetime.fromisoformat(published_at.replace('Z', '+00:00'))
+                    release_date = dt.strftime('%Y-%m-%d %H:%M UTC')
+                except:
+                    release_date = published_at
+
+        # Build header with source info
+        header = f"""## {priority_emoji} Update Available: {repo_name}
 
 **Current Version:** `{current}`
-**New Version:** `{new}`
+**New Version:** `{new}`"""
+
+        if source_url:
+            header += f"\n**Source:** [View on GitHub]({source_url})"
+
+        if release_date:
+            header += f"\n**Released:** {release_date}"
+
+        body = header + """
 
 ---
 

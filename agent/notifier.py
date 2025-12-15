@@ -139,6 +139,7 @@ class GitHubNotifier:
         new: str,
         analysis: Dict,
         changelog: str,
+        update_info: Dict,
         analyzer,  # UpdateAnalyzer instance
     ) -> bool:
         """
@@ -151,7 +152,7 @@ class GitHubNotifier:
         # Format issue title and body
         title = analyzer.format_issue_title(source_repo, new, analysis)
         body = analyzer.format_issue_body(
-            source_repo, current, new, analysis, changelog
+            source_repo, current, new, analysis, changelog, update_info
         )
 
         # Check if similar issue already exists
