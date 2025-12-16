@@ -6,5 +6,25 @@
   "pytorch/pytorch": {
     "last_version": "v2.9.1",
     "last_checked": "2025-12-15T22:21:58.140930"
+  },
+  "Fannovel16/ComfyUI-Frame-Interpolation": {
+    "last_version": "models",
+    "last_checked": "2025-12-16T21:06:29.805384"
+  },
+  "rgthree/rgthree-comfy": {
+    "last_version": "v.1.0.0",
+    "last_checked": "2025-12-16T21:06:43.442176"
+  },
+  "theUpsider/ComfyUI-Logic": {
+    "last_version": "v1.2.0",
+    "last_checked": "2025-12-16T21:06:57.039826"
+  },
+  "yolain/ComfyUI-Easy-Use": {
+    "last_version": "v1.3.4",
+    "last_checked": "2025-12-16T21:07:10.603796"
+  },
+  "shadowcz007/comfyui-mixlab-nodes": {
+    "last_version": "v0.46.0",
+    "last_checked": "2025-12-16T21:07:24.672859"
   }
 }
