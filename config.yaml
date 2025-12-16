@@ -33,10 +33,42 @@ sources:
       priority: critical
       watch_for: [releases]
 
-    # Popular custom nodes
+    # Popular custom nodes (from ComfyUI Manager)
     - owner: ltdrdata
       repo: ComfyUI-Manager
       description: "ComfyUI Manager"
+      priority: high
+      watch_for: [releases]
+
+    # Critical custom nodes (video/heavy usage)
+    - owner: Kosinkadink
+      repo: ComfyUI-VideoHelperSuite
+      description: "Video Helper Suite (video generation)"
+      priority: high
+      watch_for: [releases, tags]
+
+    - owner: Fannovel16
+      repo: ComfyUI-Frame-Interpolation
+      description: "Frame Interpolation (video)"
+      priority: high
+      watch_for: [releases, tags]
+
+    - owner: ltdrdata
+      repo: ComfyUI-Impact-Pack
+      description: "Impact Pack (workflows)"
+      priority: high
+      watch_for: [releases]
+
+    - owner: ltdrdata
+      repo: ComfyUI-Impact-Subpack
+      description: "Impact Subpack (dependencies)"
+      priority: high
+      watch_for: [releases]
+
+    # Important custom nodes (widely used)
+    - owner: rgthree
+      repo: rgthree-comfy
+      description: "rgthree's ComfyUI nodes"
       priority: medium
       watch_for: [releases]
 
@@ -44,6 +76,73 @@ sources:
       repo: ComfyUI-KJNodes
       description: "KJ Nodes collection"
       priority: medium
+      watch_for: [releases]
+
+    - owner: cubiq
+      repo: ComfyUI_essentials
+      description: "ComfyUI Essentials"
+      priority: medium
+      watch_for: [releases]
+
+    - owner: WASasquatch
+      repo: was-node-suite-comfyui
+      description: "WAS Node Suite"
+      priority: medium
+      watch_for: [releases]
+
+    - owner: Suzie1
+      repo: ComfyUI_Comfyroll_CustomNodes
+      description: "Comfyroll Custom Nodes"
+      priority: medium
+      watch_for: [releases]
+
+    - owner: ssitu
+      repo: ComfyUI_UltimateSDUpscale
+      description: "Ultimate SD Upscale"
+      priority: medium
+      watch_for: [releases]
+
+    # Additional custom nodes (lighter usage)
+    - owner: theUpsider
+      repo: ComfyUI-Logic
+      description: "Logic nodes"
+      priority: low
+      watch_for: [releases]
+
+    - owner: chrisgoringe
+      repo: cg-use-everywhere
+      description: "Use Everywhere nodes"
+      priority: low
+      watch_for: [releases]
+
+    - owner: bash-j
+      repo: mikey_nodes
+      description: "Mikey Nodes"
+      priority: low
+      watch_for: [releases]
+
+    - owner: yolain
+      repo: ComfyUI-Easy-Use
+      description: "Easy Use nodes"
+      priority: low
+      watch_for: [releases]
+
+    - owner: chflame163
+      repo: ComfyUI_LayerStyle
+      description: "Layer Style nodes"
+      priority: low
+      watch_for: [releases]
+
+    - owner: shadowcz007
+      repo: comfyui-mixlab-nodes
+      description: "Mixlab nodes"
+      priority: low
+      watch_for: [releases]
+
+    - owner: Jonseed
+      repo: ComfyUI-Detail-Daemon
+      description: "Detail Daemon"
+      priority: low
       watch_for: [releases]
 
   # Reddit sources
