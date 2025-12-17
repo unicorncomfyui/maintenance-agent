@@ -59,6 +59,11 @@ Changelog:
 Context:
 {context if context else "Standard ComfyUI deployment with CUDA 12.8.1, PyTorch nightly, SageAttention"}
 
+{"**SPECIAL NOTE FOR RUNPOD UPDATES:**" if "runpod" in repo_name.lower() else ""}
+{"If this is a RunPod platform update, focus on new features and architectural implications." if "runpod" in repo_name.lower() else ""}
+{"Examples: model caching, cold start optimizations, network storage changes, API changes." if "runpod" in repo_name.lower() else ""}
+{"These are often EVALUATE recommendations requiring architectural review rather than direct code updates." if "runpod" in repo_name.lower() else ""}
+
 Please analyze this update and provide:
 
 1. **Priority Score** (0-10):
@@ -68,8 +73,8 @@ Please analyze this update and provide:
    - 9-10: Critical, update immediately
 
 2. **Recommendation** (one of):
-   - UPDATE: Safe to update, beneficial
-   - EVALUATE: Needs testing before update
+   - UPDATE: Safe to update, beneficial (direct dependency update)
+   - EVALUATE: Needs architectural review (new platform features, breaking changes)
    - BLOCK: Breaking changes, do not update yet
    - IGNORE: Not relevant or too minor
 
@@ -81,7 +86,7 @@ Please analyze this update and provide:
 
 6. **Benefits**: Benefits of this update
 
-7. **Action Items**: Specific actions needed if updating
+7. **Action Items**: Specific actions needed if updating (for RunPod features: architectural review, testing, documentation)
 
 Respond in JSON format:
 {{

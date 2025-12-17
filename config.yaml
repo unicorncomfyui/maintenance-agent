@@ -33,6 +33,12 @@ sources:
       priority: critical
       watch_for: [releases]
 
+    - owner: runpod
+      repo: runpod-python
+      description: "RunPod Python SDK & platform updates"
+      priority: critical
+      watch_for: [releases, tags]
+
     # Popular custom nodes (from ComfyUI Manager)
     - owner: ltdrdata
       repo: ComfyUI-Manager
