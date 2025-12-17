@@ -1,7 +1,7 @@
 {
   "comfyanonymous/ComfyUI": {
-    "last_version": "v0.4.0",
-    "last_checked": "2025-12-15T22:21:42.250062"
+    "last_version": "v0.5.0",
+    "last_checked": "2025-12-17T23:37:40.789883"
   },
   "pytorch/pytorch": {
     "last_version": "v2.9.1",
@@ -26,5 +26,9 @@
   "shadowcz007/comfyui-mixlab-nodes": {
     "last_version": "v0.46.0",
     "last_checked": "2025-12-16T21:07:24.672859"
+  },
+  "runpod/runpod-python": {
+    "last_version": "v1.8.1",
+    "last_checked": "2025-12-17T23:37:49.120034"
   }
 }
