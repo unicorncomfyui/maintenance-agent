@@ -133,18 +133,18 @@ sources:
       priority: low
       watch_for: [releases]
 
-    # Temporarily disabled - requires opencv-contrib
+    # Temporarily disabled - require dependencies that conflict with system packages
     # - owner: chflame163
     #   repo: ComfyUI_LayerStyle
-    #   description: "Layer Style nodes"
+    #   description: "Layer Style nodes (opencv-contrib)"
     #   priority: low
     #   watch_for: [releases]
-
-    - owner: shadowcz007
-      repo: comfyui-mixlab-nodes
-      description: "Mixlab nodes"
-      priority: low
-      watch_for: [releases]
+    #
+    # - owner: shadowcz007
+    #   repo: comfyui-mixlab-nodes
+    #   description: "Mixlab nodes (pyOpenSSL conflict)"
+    #   priority: low
+    #   watch_for: [releases]
 
     - owner: Jonseed
       repo: ComfyUI-Detail-Daemon
