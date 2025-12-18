@@ -133,11 +133,12 @@ sources:
       priority: low
       watch_for: [releases]
 
-    - owner: chflame163
-      repo: ComfyUI_LayerStyle
-      description: "Layer Style nodes"
-      priority: low
-      watch_for: [releases]
+    # Temporarily disabled - requires opencv-contrib
+    # - owner: chflame163
+    #   repo: ComfyUI_LayerStyle
+    #   description: "Layer Style nodes"
+    #   priority: low
+    #   watch_for: [releases]
 
     - owner: shadowcz007
       repo: comfyui-mixlab-nodes
